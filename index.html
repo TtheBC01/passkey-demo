@@ -1,0 +1,28 @@
+<head>
+    <script type="text/javascript">
+        console.log("Header processed")
+
+        const publicKey = {
+            challenge: new Uint8Array([117, 61, 252, 231, 191, 241]),
+            rp: { id: "toddchapman.io", name: "Passkey Demo" },
+            user: {
+                id: new Uint8Array([79, 252, 83, 72, 214, 7, 89, 26]),
+                name: "alice",
+                displayName: "Alice"
+            },
+            pubKeyCredParams: [{ type: "public-key", alg: -7 }]
+        }
+
+        function createPasskey() {
+            console.log("creating passkey")
+            navigator.credentials.create({ publicKey })
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <button onclick="createPasskey()">
+            Create Passkey
+        </button>
+    </div>
+</body>
