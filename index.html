@@ -69,8 +69,18 @@
                 console.log("Origin: ", origin);
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin;
                 console.log("Signature: ", signature);
-                document.getElementById("signaturefield").innerHTML = "Signature: " + (new TextDecoder().decode(signature));
+                document.getElementById("signaturefield").innerHTML = "Signature: " + formatWebAuthnPublicKey(signature);
             })
+        }
+
+        function formatWebAuthnPublicKey(publicKeyArrayBuffer) {
+            // Convert ArrayBuffer to Uint8Array
+            const binaryKey = new Uint8Array(publicKeyArrayBuffer);
+
+            // Convert Uint8Array to hexadecimal string
+            const hexKey = Array.from(binaryKey).map(byte => byte.toString(16).padStart(2, '0')).join('');
+
+            return hexKey;
         }
     </script>
 </head>
