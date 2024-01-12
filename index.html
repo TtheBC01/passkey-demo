@@ -72,7 +72,7 @@
                 document.getElementById("keychallenge").innerHTML = "Challenge: " + challenge;
                 console.log("Origin: ", origin);
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin;
-                console.log("Signature: ", signature);
+                console.log("Signature: ", formatArrayBuf(signature));
                 document.getElementById("signaturefield").innerHTML = "Signature: " + formatArrayBuf(signature);
             })
         }
