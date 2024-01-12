@@ -38,6 +38,8 @@
                 const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
                 console.log("Key ID:", id);
                 document.getElementById("keyid").innerHTML = "Key ID: " + id;
+                console.log("Public Key:", formatArrayBuf(signature))
+                document.getElementById("pubkey").innerHTML = "Public Key: " + formatArrayBuf(pubKey);
                 console.log("Type:", type);
                 console.log("Challenge:", challenge);
                 document.getElementById("keychallenge").innerHTML = "Challenge: " + challenge;
@@ -59,23 +61,25 @@
                 mediation: 'optional',
             }).then((pubKeyCredential) => {
                 const { id } = pubKeyCredential;
-                const { clientDataJSON, attestationObject, signature, userHandle } = pubKeyCredential.response;
+                const { clientDataJSON, attestationObject, signature, userHandle, publicKey } = pubKeyCredential.response;
                 const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
                 console.log("Key ID: ", id);
                 document.getElementById("keyid").innerHTML = "Key ID: " + id;
+                console.log("Public Key:", formatArrayBuf(signature))
+                document.getElementById("pubkey").innerHTML = "Public Key: " + formatArrayBuf(publicKey);
                 console.log("Type: ", type);
                 console.log("Challenge: ", challenge);
                 document.getElementById("keychallenge").innerHTML = "Challenge: " + challenge;
                 console.log("Origin: ", origin);
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin;
                 console.log("Signature: ", signature);
-                document.getElementById("signaturefield").innerHTML = "Signature: " + formatWebAuthnPublicKey(signature);
+                document.getElementById("signaturefield").innerHTML = "Signature: " + formatArrayBuf(signature);
             })
         }
 
-        function formatWebAuthnPublicKey(publicKeyArrayBuffer) {
+        function formatArrayBuf(myArrayBuffer) {
             // Convert ArrayBuffer to Uint8Array
-            const binaryKey = new Uint8Array(publicKeyArrayBuffer);
+            const binaryKey = new Uint8Array(myArrayBuffer);
 
             // Convert Uint8Array to hexadecimal string
             const hexKey = Array.from(binaryKey).map(byte => byte.toString(16).padStart(2, '0')).join('');
@@ -103,20 +107,25 @@
             </p>
         </div>
         <div class="box d">
+            <p id="pubkey">
+                Public Key:
+            </p>
+        </div>
+        <div class="box e">
             <p id="keyorigin">
                 Origin:
             </p>
         </div>
-        <div class="box e">
+        <div class="box f">
             <p id="keychallenge">
                 Challenge:
             </p>
         </div>
-        <div class="box f">
+        <div class="box g">
             <p id="signaturefield">
 
             </p>
         </div>
     </div>
 </body>
-</htm>
+</html>
