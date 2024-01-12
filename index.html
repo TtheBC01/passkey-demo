@@ -20,7 +20,7 @@
             navigator.credentials.create({ publicKey }).then((pkCred) => {
                 const response = pkCred.response;
                 const pk = response.getPublicKey();
-                var decoder = TextDecoder('utf-8');
+                var decoder = new TextDecoder('utf-8');
                 var decPK = decoder.decode(pk);
                 console.log(decPK);
             })
