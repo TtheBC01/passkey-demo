@@ -53,7 +53,7 @@
             navigator.credentials.get({
                 publicKey,
                 mediation: 'optional',
-            }).then((PublicKeyCredential) => {
+            }).then((pubKeyCredential) => {
                 const { id } = pubKeyCredential;
                 const { clientDataJSON, attestationObject, signature, userHandle } = pubKeyCredential.response;
                 const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
@@ -61,6 +61,7 @@
                 console.log("Type:", type);
                 console.log("Challenge:", challenge);
                 console.log("Origin:", origin);
+                console.log("Signature:", signature)
             })
         }
     </script>
