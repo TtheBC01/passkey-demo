@@ -51,11 +51,6 @@ p {
     grid-row: row 5;
   }
 
-  .g {
-    grid-column: col / span 4;
-    grid-row: row 6;
-  }
-
 /* CSS */
 .button-3 {
     appearance: none;
