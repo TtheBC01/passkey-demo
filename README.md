@@ -1,6 +1,6 @@
 # Passkey Demo in straight HTML
 
-Playing around with the WebAuthn api. 
+Playing around with the [Web Authentication API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API). 
 
 ## Run Locally:
 
