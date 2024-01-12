@@ -1,14 +1,25 @@
+<!DOCTYPE html>
+<html>
+
 <head>
+    <title>Passkey Demo</title>
     <script type="text/javascript">
         console.log("Header processed")
 
         const publicKey = {
             challenge: new Uint8Array([117, 61, 252, 231, 191, 241]),
-            rp: { id: "toddchapman.io", name: "Passkey Demo" },
-            residentKey: "preferred",
-            hints: "client-device",
+            rp: {
+                id: window.location.host,
+                name: document.title,
+            },
+            authenticatorSelection: {
+                userVerification: 'preferred', // Do you want to use biometrics or a pin?
+                residentKey: 'required', // Create a resident key e.g. passkey
+            },
+            attestation: 'indirect', // indirect, direct, or none
+            timeout: 60_000,
             user: {
-                id: new Uint8Array([79, 252, 83, 72, 214, 7, 89, 26]),
+                id: new TextEncoder().encode(crypto.randomUUID()),
                 name: "alice",
                 displayName: "Alice"
             },
@@ -17,16 +28,22 @@
 
         function createPasskey() {
             console.log("creating passkey")
-            navigator.credentials.create({ publicKey }).then((pkCred) => {
-                const response = pkCred.response;
-                const pk = response.getPublicKey();
-                var decoder = new TextDecoder('utf-8');
-                var decPK = decoder.decode(pk);
-                console.log(decPK);
+            navigator.credentials.create({ publicKey }).then((pubKeyCredential) => {
+                const {
+                    id // the key id a.k.a. kid
+                } = pubKeyCredential;
+                const pubKey = pubKeyCredential.response.getPublicKey();
+                const { clientDataJSON, attestationObject } = pubKeyCredential.response;
+                const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
+                console.log("Key ID:", id);
+                console.log("Type:", type);
+                console.log("Challenge:", challenge);
+                console.log("Origin:", origin);
             })
         }
     </script>
 </head>
+
 <body>
     <div>
         <button onclick="createPasskey()">
@@ -34,3 +51,4 @@
         </button>
     </div>
 </body>
+</htm>
