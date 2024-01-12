@@ -57,15 +57,15 @@
                 const { id } = pubKeyCredential;
                 const { clientDataJSON, attestationObject, signature, userHandle } = pubKeyCredential.response;
                 const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
-                console.log("Key ID:", id);
-                document.getElementById("keyid").innerHTML="Key ID:" + id;
-                console.log("Type:", type);
-                console.log("Challenge:", challenge);
-                document.getElementById("keychallenge").innerHTML="Challenge:" + challenge;
-                console.log("Origin:", origin);
-                document.getElementById("keyorigin").innerHTML="Origin:" + origin;
-                console.log("Signature:", signature);
-                document.getElementById("signaturefield").innerHTML="Signature:" + signature;
+                console.log("Key ID: ", id);
+                document.getElementById("keyid").innerHTML="Key ID: " + id;
+                console.log("Type: ", type);
+                console.log("Challenge: ", challenge);
+                document.getElementById("keychallenge").innerHTML="Challenge: " + challenge;
+                console.log("Origin: ", origin);
+                document.getElementById("keyorigin").innerHTML="Origin: " + origin;
+                console.log("Signature: ", signature);
+                document.getElementById("signaturefield").innerHTML="Signature: " + (new TextDecoder().decode(signature));
             })
         }
     </script>
