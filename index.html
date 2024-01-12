@@ -58,10 +58,14 @@
                 const { clientDataJSON, attestationObject, signature, userHandle } = pubKeyCredential.response;
                 const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
                 console.log("Key ID:", id);
+                document.getElementById("keyid").innerHTML="Key ID:" + id;
                 console.log("Type:", type);
                 console.log("Challenge:", challenge);
+                document.getElementById("keychallenge").innerHTML="Challenge:" + challenge;
                 console.log("Origin:", origin);
-                console.log("Signature:", signature)
+                document.getElementById("keyorigin").innerHTML="Origin:" + origin;
+                console.log("Signature:", signature);
+                document.getElementById("signaturefield").innerHTML="Signature:" + signature;
             })
         }
     </script>
@@ -75,6 +79,20 @@
         <button onclick="getPasskey()">
             Get Signature
         </button>
+    </div>
+    <div>
+        <p id="keyid">
+            Key ID:
+        </p>
+        <p id="keyorigin">
+            Origin:
+        </p>
+        <p id="keychallenge">
+            Challenge:
+        </p>
+        <p id="signaturefield">
+
+        </p>
     </div>
 </body>
 </htm>
