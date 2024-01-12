@@ -18,3 +18,5 @@ By adding `allow="publickey-credentials-get *"` to an iframe element, you can re
 <iframe src="https://toddchapman.io/passkey-demo/" allow="publickey-credentials-get *" title="Passkey Demo">
 </iframe>
 ```
+
+Try it out at [w3schools.com](https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_iframe).
