@@ -45,7 +45,7 @@
         function getPasskey() {
             console.log("Generating Passkey Signature")
             const publicKey = {
-                challenge: new TextEncoder().encode(crypto.randomUUID()),
+                challenge: new TextEncoder().encode("Login to Passkey Demo"),
                 rpId: window.location.host,
                 timeout: 60_000,
             };
