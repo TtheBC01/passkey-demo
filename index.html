@@ -3,6 +3,7 @@
 
 <head>
     <title>Passkey Demo</title>
+    <link rel="stylesheet" href="styles.css">
     <script type="text/javascript">
         console.log("Header processed")
 
@@ -21,8 +22,8 @@
                 timeout: 60_000,
                 user: {
                     id: new TextEncoder().encode(crypto.randomUUID()),
-                    name: "alice",
-                    displayName: "Alice"
+                    name: "Demo",
+                    displayName: "Demo"
                 },
                 pubKeyCredParams: [{ type: "public-key", alg: -7 }]
             }
@@ -36,9 +37,12 @@
                 const { clientDataJSON, attestationObject } = pubKeyCredential.response;
                 const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
                 console.log("Key ID:", id);
+                document.getElementById("keyid").innerHTML="Key ID: " + id;
                 console.log("Type:", type);
                 console.log("Challenge:", challenge);
+                document.getElementById("keychallenge").innerHTML="Challenge: " + challenge;
                 console.log("Origin:", origin);
+                document.getElementById("keyorigin").innerHTML="Origin: " + origin;
             })
         }
 
@@ -73,10 +77,10 @@
 
 <body>
     <div>
-        <button onclick="createPasskey()">
+        <button onclick="createPasskey()" class="button-3">
             Create Passkey
         </button>
-        <button onclick="getPasskey()">
+        <button onclick="getPasskey()" class="button-3">
             Get Signature
         </button>
     </div>
