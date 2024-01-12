@@ -37,12 +37,12 @@
                 const { clientDataJSON, attestationObject } = pubKeyCredential.response;
                 const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
                 console.log("Key ID:", id);
-                document.getElementById("keyid").innerHTML="Key ID: " + id;
+                document.getElementById("keyid").innerHTML = "Key ID: " + id;
                 console.log("Type:", type);
                 console.log("Challenge:", challenge);
-                document.getElementById("keychallenge").innerHTML="Challenge: " + challenge;
+                document.getElementById("keychallenge").innerHTML = "Challenge: " + challenge;
                 console.log("Origin:", origin);
-                document.getElementById("keyorigin").innerHTML="Origin: " + origin;
+                document.getElementById("keyorigin").innerHTML = "Origin: " + origin;
             })
         }
 
@@ -62,41 +62,51 @@
                 const { clientDataJSON, attestationObject, signature, userHandle } = pubKeyCredential.response;
                 const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
                 console.log("Key ID: ", id);
-                document.getElementById("keyid").innerHTML="Key ID: " + id;
+                document.getElementById("keyid").innerHTML = "Key ID: " + id;
                 console.log("Type: ", type);
                 console.log("Challenge: ", challenge);
-                document.getElementById("keychallenge").innerHTML="Challenge: " + challenge;
+                document.getElementById("keychallenge").innerHTML = "Challenge: " + challenge;
                 console.log("Origin: ", origin);
-                document.getElementById("keyorigin").innerHTML="Origin: " + origin;
+                document.getElementById("keyorigin").innerHTML = "Origin: " + origin;
                 console.log("Signature: ", signature);
-                document.getElementById("signaturefield").innerHTML="Signature: " + (new TextDecoder().decode(signature));
+                document.getElementById("signaturefield").innerHTML = "Signature: " + (new TextDecoder().decode(signature));
             })
         }
     </script>
 </head>
 
 <body>
-    <div>
-        <button onclick="createPasskey()" class="button-3">
-            Create Passkey
-        </button>
-        <button onclick="getPasskey()" class="button-3">
-            Get Signature
-        </button>
-    </div>
-    <div>
-        <p id="keyid">
-            Key ID:
-        </p>
-        <p id="keyorigin">
-            Origin:
-        </p>
-        <p id="keychallenge">
-            Challenge:
-        </p>
-        <p id="signaturefield">
+    <div class="wrapper">
+        <div class="box a">
+            <button onclick="createPasskey()" class="button-3">
+                Create Passkey
+            </button>
+        </div>
+        <div class="box b">
+            <button onclick="getPasskey()" class="button-3">
+                Get Signature
+            </button>
+        </div>
+        <div class="box c">
+            <p id="keyid">
+                Key ID:
+            </p>
+        </div>
+        <div class="box d">
+            <p id="keyorigin">
+                Origin:
+            </p>
+        </div>
+        <div class="box e">
+            <p id="keychallenge">
+                Challenge:
+            </p>
+        </div>
+        <div class="box f">
+            <p id="signaturefield">
 
-        </p>
+            </p>
+        </div>
     </div>
 </body>
 </htm>
