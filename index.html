@@ -66,10 +66,10 @@
                 mediation: 'optional',
             }).then((pubKeyCredential) => {
                 const { id } = pubKeyCredential;
-                const { clientDataJSON, attestationObject, signature, userHandle } = pubKeyCredential.response;
+                const { clientDataJSON, signature, userHandle } = pubKeyCredential.response;
                 const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
 
-                console.log("Attestation Object: ", attestationObject);
+                console.log("Public Key Credential: ", pubKeyCredential.toJSON());
                 //const rawResponse = pubKeyCredential.response.getAuthenticatorData();
                 //const signCountBytes = existingArrayBuffer.slice(34, 37); // sign count lives in the 4 bytes starting at byte 34 as per W3C 
                 //const dataView = new DataView(subArrayBuffer);
@@ -84,7 +84,7 @@
                 document.getElementById("keychallenge").innerHTML = "Challenge: " + challenge;
 
                 console.log("Origin: ", origin);
-                document.getElementById("keyorigin").innerHTML = "Origin: " + origin + "   " + "User Handle: " + userHandle + "   " + "Sign Count: " + signCount;
+                document.getElementById("keyorigin").innerHTML = "Origin: " + origin + "   " + "User Handle: " + userHandle;// + "   " + "Sign Count: " + signCount;
 
                 const decodedSignature = formatArrayBuf(signature);
                 console.log("Signature: ", formatArrayBuf(decodedSignature));
