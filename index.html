@@ -39,8 +39,9 @@
                 console.log("Key ID:", id);
                 document.getElementById("keyid").innerHTML = "Key ID: " + id;
 
-                console.log("Public Key:", formatArrayBuf(pubKey))
-                document.getElementById("signaturefield").innerHTML = "Public Key: " + formatArrayBuf(pubKey);
+                const decodedPubKey = formatArrayBuf(pubKey);
+                console.log("Public Key:", decodedPubKey)
+                document.getElementById("signaturefield").innerHTML = "Public Key: " + truncateString(decodedPubKey);
 
                 console.log("Type:", type);
                 console.log("Challenge:", challenge);
@@ -79,8 +80,9 @@
                 console.log("Origin: ", origin);
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin;
 
-                console.log("Signature: ", formatArrayBuf(signature));
-                document.getElementById("signaturefield").innerHTML = "Signature: " + formatArrayBuf(signature);
+                const decodedSignature = formatArrayBuf(signature);
+                console.log("Signature: ", formatArrayBuf(decodedSignature));
+                document.getElementById("signaturefield").innerHTML = "Signature: " + truncateString(decodedSignature);
             })
         }
 
@@ -92,6 +94,26 @@
             const hexKey = Array.from(binaryKey).map(byte => byte.toString(16).padStart(2, '0')).join('');
 
             return hexKey;
+        }
+
+        function truncateString(str) {
+            if (str.length <= 10) {
+                return str; // No need to truncate if the string is 10 characters or less
+            }
+
+            // Extract the first 5 characters
+            const firstPart = str.slice(0, 5);
+
+            // Extract the last 5 characters
+            const lastPart = str.slice(-5);
+
+            // Replace the middle characters with "..."
+            const middlePart = "...";
+
+            // Concatenate the parts to form the truncated string
+            const truncatedString = firstPart + middlePart + lastPart;
+
+            return truncatedString;
         }
     </script>
 </head>
@@ -130,4 +152,5 @@
         </div>
     </div>
 </body>
+
 </html>
