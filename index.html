@@ -71,7 +71,7 @@
 
                 console.log("Authenticator Data: ", formatArrayBuf(authenticatorData));
                 const signCountBytes = authenticatorData.slice(34, 38); // sign count lives in the 4 bytes starting at byte 34 as per W3C 
-                const dataView = new DataView(subArrayBuffer);
+                const dataView = new DataView(signCountBytes);
                 const signCount = dataView.getInt32(0, false);
 
                 console.log("Key ID: ", id);
