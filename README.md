@@ -30,4 +30,4 @@ Most major implementations of the Web Authentication API auto increments a [coun
 invoked successfully. Hence, even you request a signature on the same challenge text, you will not receive the same signature value on successive invocations. 
 For this reason WebAuthn is not appropriate for key-ratchet style algorithms for deriving new keys from message signing. 
 
-The options for public key [credential algorithms](https://www.rfc-editor.org/rfc/rfc9053.html#name-examples-2) (`pubKeyCredParams`) are `-7` for Elliptic Curve Digital Signature Algorithm with SHA-256 and `-257` for RSA Signature with SHA-256. There is currently no support or plans to natively support []`secp256k1`](https://www.rfc-editor.org/rfc/rfc9053.html#name-security-considerations-for).
+The options for public key [credential algorithms](https://www.rfc-editor.org/rfc/rfc9053.html#name-examples-2) (`pubKeyCredParams`) are `-7` for Elliptic Curve Digital Signature Algorithm with SHA-256 and `-257` for RSA Signature with SHA-256. There is currently no support or plans to natively support [`secp256k1`](https://www.rfc-editor.org/rfc/rfc9053.html#name-security-considerations-for).
