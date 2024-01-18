@@ -21,3 +21,13 @@ but you *cannot* request a new passkey be created by the third party domain insi
 ```
 
 Try it out at [w3schools.com](https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_iframe).
+
+## Other Notes:
+
+Passkey are issued on a per eTLD+1 basis unless other options are specified by the client. That is, `abc.example.com`, `abc.example.com/resource`, and `def.myexample.com` all access the same passkey/public key credential under the [W3C](https://www.w3.org/TR/webauthn-2/) standard. 
+
+Most major implementations of the Web Authentication API auto increments a [counter](https://www.w3.org/TR/webauthn-2/#signature-counter) value every time `get` is 
+invoked successfully. Hence, even you request a signature on the same challenge text, you will not receive the same signature value on successive invocations. 
+For this reason WebAuthn is not appropriate for key-ratchet style algorithms for deriving new keys from message signing. 
+
+The options for public key credential algorithms (`pubKeyCredParams`) are `-7` for Elliptic Curve Digital Signature Algorithm with SHA-256 and `-257` for RSA Signature with SHA-256. 
