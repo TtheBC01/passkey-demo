@@ -86,7 +86,7 @@
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin + "   " + "Sign Count: " + signCount;
 
                 const decodedSignature = formatArrayBuf(signature);
-                console.log("Signature: ", formatArrayBuf(decodedSignature));
+                console.log("Signature: ", decodedSignature);
                 document.getElementById("signaturefield").innerHTML = "Signature: " + truncateString(decodedSignature);
             })
         }
