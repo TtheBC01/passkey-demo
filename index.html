@@ -69,10 +69,11 @@
                 const { clientDataJSON, attestationObject, signature, userHandle } = pubKeyCredential.response;
                 const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
 
-                const rawResponse = pubKeyCredential.response.getAuthenticatorData();
-                const signCountBytes = existingArrayBuffer.slice(34, 37);
-                const dataView = new DataView(subArrayBuffer);
-                const signCount = dataView.getInt32(0, false);
+                console.log("Attestation Object: ", attestationObject);
+                //const rawResponse = pubKeyCredential.response.getAuthenticatorData();
+                //const signCountBytes = existingArrayBuffer.slice(34, 37); // sign count lives in the 4 bytes starting at byte 34 as per W3C 
+                //const dataView = new DataView(subArrayBuffer);
+                //const signCount = dataView.getInt32(0, false);
 
                 console.log("Key ID: ", id);
                 document.getElementById("keyid").innerHTML = "Key ID: " + id;
