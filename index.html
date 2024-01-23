@@ -40,7 +40,8 @@
                 document.getElementById("keyid").innerHTML = "Key ID: " + id;
 
                 const decodedPubKey = formatArrayBuf(pubKey);
-                console.log("Public Key:", decodedPubKey)
+                console.log("Raw Public Key:", pubKey);
+                console.log("Decoded Public Key:", decodedPubKey);
                 document.getElementById("signaturefield").innerHTML = "Public Key: " + truncateString(decodedPubKey);
 
                 console.log("Type:", type);
@@ -86,7 +87,8 @@
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin + "   " + "Sign Count: " + signCount;
 
                 const decodedSignature = formatArrayBuf(signature);
-                console.log("Signature: ", decodedSignature);
+                console.log("Raw Signature:", signature);
+                console.log("Decoded Signature: ", decodedSignature);
                 document.getElementById("signaturefield").innerHTML = "Signature: " + truncateString(decodedSignature);
             })
         }
