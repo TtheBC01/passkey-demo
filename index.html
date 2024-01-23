@@ -35,7 +35,7 @@
                 } = pubKeyCredential;
                 const pubKey = pubKeyCredential.response.getPublicKey();
                 const { clientDataJSON, attestationObject } = pubKeyCredential.response;
-                const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
+                const { type, challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
                 console.log("Key ID:", id);
                 document.getElementById("keyid").innerHTML = "Key ID: " + id;
 
@@ -68,7 +68,7 @@
             }).then((pubKeyCredential) => {
                 const { id } = pubKeyCredential;
                 const { authenticatorData, clientDataJSON, signature, userHandle } = pubKeyCredential.response;
-                const { type, challenge, origin } = JSON.parse(new TextDecoder().decode(clientDataJSON));
+                const { type, challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
 
                 console.log("Authenticator Data: ", formatArrayBuf(authenticatorData));
                 const signCountBytes = authenticatorData.slice(33, 37); // sign count lives in the 4 bytes starting at byte 34 as per W3C 
