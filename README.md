@@ -26,6 +26,10 @@ Try it out at [w3schools.com](https://www.w3schools.com/tags/tryit.asp?filename=
 
 Passkey are issued on a per eTLD+1 basis unless other options are specified by the client. That is, `abc.example.com`, `abc.example.com/resource`, and `def.myexample.com` all access the same passkey/public key credential under the [W3C](https://www.w3.org/TR/webauthn-2/) standard. 
 
+The Web Authentication API (WebAuthn) is its own interface standard separate from the [FIDO2](https://fidoalliance.org/specifications/) digital signature standard. 
+
+Public keys and signatures are returned [base64URL encoded](https://fidoalliance.org/specs/fido-v2.0-ps-20150904/fido-key-attestation-v2.0-ps-20150904.html#h4_attributes).
+
 Most major implementations of the Web Authentication API auto increments a [counter](https://www.w3.org/TR/webauthn-2/#signature-counter) value every time `get` is 
 invoked successfully. Hence, even you request a signature on the same challenge text, you will not receive the same signature value on successive invocations. 
 For this reason WebAuthn is not appropriate for key-ratchet style algorithms for deriving new keys from message signing. 
