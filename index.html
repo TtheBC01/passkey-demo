@@ -41,7 +41,7 @@
 
                 const decodedPubKey = formatArrayBuf(pubKey);
                 console.log("Raw Public Key:", pubKey);
-                console.log("Decoded Public Key:", decodedPubKey);
+                console.log("Decoded Public Key:", pubKey.toString('hex'));
                 document.getElementById("signaturefield").innerHTML = "Public Key: " + truncateString(decodedPubKey);
 
                 console.log("Type:", type);
@@ -93,20 +93,21 @@
             })
         }
 
-        function formatArrayBuf(buffer, encoding = 'utf-8') {
+        /*function formatArrayBuf(buffer, encoding = 'utf-8') {
             const decoder = new TextDecoder(encoding);
             return decoder.decode(buffer);
-        }
+        }*/
 
-        /*function formatArrayBuf(myArrayBuffer) {
+        function formatArrayBuf(myArrayBuffer) {
             // Convert ArrayBuffer to Uint8Array
             const binaryKey = new Uint8Array(myArrayBuffer);
 
             // Convert Uint8Array to hexadecimal string
-            const hexKey = Array.from(binaryKey).map(byte => byte.toString(16).padStart(2, '0')).join('');
+            //const hexKey = Array.from(binaryKey).map(byte => byte.toString(16).padStart(2, '0')).join('');
+            Buffer.from(binaryKey).toString('hex');
 
             return hexKey;
-        }*/
+        }
 
         function truncateString(str) {
             if (str.length <= 30) {

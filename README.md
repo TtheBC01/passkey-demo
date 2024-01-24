@@ -28,7 +28,7 @@ Passkey are issued on a per eTLD+1 basis unless other options are specified by t
 
 The Web Authentication API (WebAuthn) is its own interface standard separate from the [FIDO2](https://fidoalliance.org/specifications/) digital signature standard. 
 
-Public keys and signatures are returned [base64URL encoded](https://fidoalliance.org/specs/fido-v2.0-ps-20150904/fido-key-attestation-v2.0-ps-20150904.html#h4_attributes).
+Public keys and signatures are returned [base64URL encoded](https://fidoalliance.org/specs/fido-v2.0-ps-20150904/fido-key-attestation-v2.0-ps-20150904.html#h4_attributes). See this [forum](https://bitcoin.stackexchange.com/questions/92680/what-are-the-der-signature-and-sec-format) for info on how to read the bytes in the signature. Also [this](https://transactionfee.info/charts/bitcoin-script-ecdsa-length/). 
 
 Most major implementations of the Web Authentication API auto increments a [counter](https://www.w3.org/TR/webauthn-2/#signature-counter) value every time `get` is 
 invoked successfully. Hence, even you request a signature on the same challenge text, you will not receive the same signature value on successive invocations. 
