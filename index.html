@@ -41,7 +41,7 @@
 
                 const decodedPubKey = formatArrayBuf(pubKey);
                 console.log("Raw Public Key:", pubKey);
-                console.log("Decoded Public Key:", pubKey.toString('hex'));
+                console.log("Decoded Public Key:", (new Uint8Array(pubKey)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
                 document.getElementById("signaturefield").innerHTML = "Public Key: " + truncateString(decodedPubKey);
 
                 console.log("Type:", type);
@@ -91,6 +91,10 @@
                 console.log("Decoded Signature: ", decodedSignature);
                 document.getElementById("signaturefield").innerHTML = "Signature: " + truncateString(decodedSignature);
             })
+        }
+
+        function i2hex(i) {
+            return ('0' + i.toString(16)).slice(-2);
         }
 
         function formatArrayBuf(buffer, encoding = 'utf-8') {
