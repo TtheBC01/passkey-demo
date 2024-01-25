@@ -123,6 +123,7 @@
             const metadataUint8Array = pubKeyView.slice(4, 4 + metadataLength - 1);
             const metadataString = metadataUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
             console.log("Metadata: ", metadataString);
+            console.log("Metadata string:", metadataUint8Array.toString());
 
             const publicKeyIndicatorByte = pubKeyView[4 + metadataLength];
             console.log('Public Key Type Byte: ', publicKeyIndicatorByte);
