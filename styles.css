@@ -7,6 +7,7 @@ p {
     color: #00ff33;
 }
 
+
 .wrapper {
     display: grid;
     grid-gap: 10px;
@@ -52,6 +53,11 @@ p {
   }
 
 /* CSS */
+
+#clipboard-button {
+  display: none;
+}
+
 .button-3 {
     appearance: none;
     background-color: #2ea44f;

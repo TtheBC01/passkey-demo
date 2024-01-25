@@ -5,7 +5,7 @@
     <title>Passkey Demo</title>
     <link rel="stylesheet" href="styles.css">
     <script type="text/javascript">
-        console.log("Header processed")
+        var clipboardHolder;
 
         function createPasskey() {
             const publicKey = {
@@ -39,10 +39,12 @@
                 console.log("Key ID:", id);
                 document.getElementById("keyid").innerHTML = "Key ID: " + id;
 
-                const decodedPubKey = formatArrayBuf(pubKey);
+                const decodedPubKey = (new Uint8Array(pubKey)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
+                clipboardHolder = decodedPubKey;
                 console.log("Raw Public Key:", pubKey);
-                console.log("Decoded Public Key:", (new Uint8Array(pubKey)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
+                console.log("Decoded Public Key:", decodedPubKey);
                 document.getElementById("signaturefield").innerHTML = "Public Key: " + truncateString(decodedPubKey);
+                document.getElementById('clipboard-button').style.display = 'block';
 
                 console.log("Type:", type);
                 console.log("Challenge:", challenge);
@@ -87,31 +89,18 @@
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin + "   " + "Sign Count: " + signCount;
 
                 const decodedSignature = formatArrayBuf(signature);
+                clipboardHolder = decodedSignature;
                 console.log("Raw Signature:", signature);
                 console.log("Decoded Signature: ", decodedSignature);
                 document.getElementById("signaturefield").innerHTML = "Signature: " + truncateString(decodedSignature);
+                document.getElementById('clipboard-button').style.display = 'block';
             })
-        }
-
-        function i2hex(i) {
-            return ('0' + i.toString(16)).slice(-2);
         }
 
         function formatArrayBuf(buffer, encoding = 'utf-8') {
             const decoder = new TextDecoder(encoding);
             return decoder.decode(buffer);
         }
-
-        /*function formatArrayBuf(myArrayBuffer) {
-            // Convert ArrayBuffer to Uint8Array
-            const binaryKey = new Uint8Array(myArrayBuffer);
-
-            // Convert Uint8Array to hexadecimal string
-            //const hexKey = Array.from(binaryKey).map(byte => byte.toString(16).padStart(2, '0')).join('');
-            Buffer.from(binaryKey).toString('hex');
-
-            return hexKey;
-        }*/
 
         function truncateString(str) {
             if (str.length <= 30) {
@@ -132,7 +121,24 @@
 
             return truncatedString;
         }
+
+        function copyToClipboard() {
+            // Create a temporary textarea element
+            var tempTextArea = document.createElement("textarea");
+            tempTextArea.value = clipboardHolder;
+
+            // Append the textarea to the document
+            document.body.appendChild(tempTextArea);
+
+            // Select the text in the textarea
+            tempTextArea.select();
+            document.execCommand("copy");
+
+            // Remove the temporary textarea
+            document.body.removeChild(tempTextArea);
+        }
     </script>
+
 </head>
 
 <body>
@@ -161,11 +167,15 @@
             <p id="keychallenge">
                 Challenge:
             </p>
+
         </div>
         <div class="box f">
             <p id="signaturefield">
-
+                asdf
             </p>
+            <button class="button-3" id="clipboard-button" title="Copy Signature Field" onclick="copyToClipboard()">
+                Copy
+            </button>
         </div>
     </div>
 </body>
