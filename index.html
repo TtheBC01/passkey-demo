@@ -107,13 +107,13 @@
             signatureView = new Uint8Array(signatureArray);
 
             const headerByte = signatureView[0];
-            console.log('Signature Header Byte: ', headerByte.toString());
+            console.log('Signature Header Byte: ', headerByte);
 
             const firstCoordLength = signatureView[1];
-            console.log('First Coordinate Length: ', firstCoordLength.toString());
+            console.log('First Coordinate Length: ', firstCoordLength);
 
             const typeIndicatorByte = signatureView[2];
-            console.log('Data Type Byte: ', typeIndicatorByte.toString());
+            console.log('Data Type Byte: ', typeIndicatorByte);
 
         }
 
