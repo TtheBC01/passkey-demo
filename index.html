@@ -70,11 +70,13 @@
 
                 console.log("Raw Authenticator Data: ", authenticatorData);
                 console.log("Raw Client Data JSON: ", clientDataJSON);
+                console.log("Decoded Client Data JSON: ", formatArrayBuf(clientDataJSON))
 
-                console.log("Authenticator Data: ", formatArrayBuf(authenticatorData));
+                console.log("rpIdHash: ", formatArrayBuf(authenticatorData.slice(0,31)));
                 const signCountBytes = authenticatorData.slice(33, 37); // sign count lives in the 4 bytes starting at byte 34 as per W3C 
                 const dataView = new DataView(signCountBytes);
                 const signCount = dataView.getInt32(0, false);
+                console.log("Sign Count: ", signCount);
 
                 console.log("Key ID: ", id);
                 document.getElementById("keyid").innerHTML = "Key ID: " + id;
