@@ -120,10 +120,16 @@
             const rLength = signatureView[3];
             console.log("R Value Length: ", rLength);
 
-            const rValueUint8Array = signatureView.slice(4,4+rLength);
-            console.log("X Coordinate: ", rValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
+            const rValueUint8Array = signatureView.slice(4,4+rLength-1);
+            console.log("R Value: ", rValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
 
+            const sLength = signatureView[4+rLength];
+            console.log("S Value Length: ", sLength);
 
+            const startingByte = 4+rLength+1;
+            const endingByte = startingByte+sLength-1;
+            const sValueUint8Array = signatureView.slice(startingByte,endingByte);
+            console.log("S Value: ", sValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
         }
 
         function truncateString(str) {
