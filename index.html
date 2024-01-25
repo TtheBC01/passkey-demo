@@ -43,7 +43,7 @@
                 console.log("Raw Public Key:", pubKey);
 
                 console.log("Type:", type);
-                console.log("Challenge:", challenge);
+                console.log("Challenge:", truncateString(challenge));
 
                 document.getElementById("keychallenge").innerHTML = "Challenge: " + challenge;
 
