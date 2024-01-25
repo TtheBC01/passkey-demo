@@ -89,12 +89,8 @@
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin + "   " + "Sign Count: " + signCount;
 
                 const decodedSignature = formatArrayBuf(signature);
-                clipboardHolder = decodedSignature;
                 parseRawSignature(signature);
                 console.log("Raw Signature:", signature);
-                console.log("Decoded Signature: ", decodedSignature);
-                document.getElementById("signaturefield").innerHTML = "Signature: " + truncateString(decodedSignature);
-                document.getElementById('clipboard-button').style.display = 'block';
             })
         }
 
@@ -117,7 +113,7 @@
             // Third value tells you the type of the next value which MUST be an integer (0x02) if this is a signature array
             const rTypeIndicatorByte = signatureView[2];
             console.log('Data Type Byte: ', rTypeIndicatorByte);
-            // Third byte MUST be equal to 2 if this is a legitamate signature array
+            // Third byte MUST be equal to 2 if this is a legitimate signature array
             console.assert(rTypeIndicatorByte === 2, "This is not a signature byte array");
 
             // Forth Value is the length of the first coordinate (r) of the signature (r,s)
@@ -125,23 +121,29 @@
             console.log("R Value Length: ", rLength);
 
             // Slice out the r value and print it
-            const rValueUint8Array = signatureView.slice(4,4+rLength-1);
-            console.log("R Value: ", rValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
+            const rValueUint8Array = signatureView.slice(4, 4 + rLength - 1);
+            const rString = rValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
+            console.log("R Value: ", rString);
 
-            const sTypeIndicatorByte = signatureView[4+rLength];
+            const sTypeIndicatorByte = signatureView[4 + rLength];
             console.log('Data Type Byte: ', sTypeIndicatorByte);
-            // Third byte MUST be equal to 2 if this is a legitamate signature array
+            // This byte MUST be equal to 2 if this is a legitimate signature array
             console.assert(sTypeIndicatorByte === 2, "This is not a signature byte array");
 
             // Now get the length of the s value of the signature (r,s)
-            const sLength = signatureView[4+rLength+1];
+            const sLength = signatureView[4 + rLength + 1];
             console.log("S Value Length: ", sLength);
 
             // Slice out the s value and print it
-            const startingByte = 4+rLength+2;
-            const endingByte = startingByte+sLength-1;
-            const sValueUint8Array = signatureView.slice(startingByte,endingByte);
-            console.log("S Value: ", sValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
+            const startingByte = 4 + rLength + 2;
+            const endingByte = startingByte + sLength - 1;
+            const sValueUint8Array = signatureView.slice(startingByte, endingByte);
+            const sString = sValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
+            console.log("S Value: ", sString);
+
+            document.getElementById("signaturefield").innerHTML = "R Length: " + rLength + ", R: " + rString.slice(0,10) + "..." + ", S Length: " + sLength + ", S: " + sString.slice(0,10) + "...";
+            document.getElementById('clipboard-button').style.display = 'block';
+            clipboardHolder = rString + "," + sString;
         }
 
         function truncateString(str) {
