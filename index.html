@@ -115,10 +115,10 @@
             console.log('Length of Signature in Bytes: ', signatureLength);
 
             // Third value tells you the type of the next value which MUST be an integer (0x02) if this is a signature array
-            const typeIndicatorByte = signatureView[2];
-            console.log('Data Type Byte: ', typeIndicatorByte);
+            const rTypeIndicatorByte = signatureView[2];
+            console.log('Data Type Byte: ', rTypeIndicatorByte);
             // Third byte MUST be equal to 2 if this is a legitamate signature array
-            console.assert(typeIndicatorByte === 2, "This is not a signature byte array");
+            console.assert(rTypeIndicatorByte === 2, "This is not a signature byte array");
 
             // Forth Value is the length of the first coordinate (r) of the signature (r,s)
             const rLength = signatureView[3];
@@ -128,12 +128,17 @@
             const rValueUint8Array = signatureView.slice(4,4+rLength-1);
             console.log("R Value: ", rValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
 
+            const sTypeIndicatorByte = signatureView[4+rLength];
+            console.log('Data Type Byte: ', sTypeIndicatorByte);
+            // Third byte MUST be equal to 2 if this is a legitamate signature array
+            console.assert(sTypeIndicatorByte === 2, "This is not a signature byte array");
+
             // Now get the length of the s value of the signature (r,s)
-            const sLength = signatureView[4+rLength];
+            const sLength = signatureView[4+rLength+1];
             console.log("S Value Length: ", sLength);
 
             // Slice out the s value and print it
-            const startingByte = 4+rLength+1;
+            const startingByte = 4+rLength+2;
             const endingByte = startingByte+sLength-1;
             const sValueUint8Array = signatureView.slice(startingByte,endingByte);
             console.log("S Value: ", sValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
