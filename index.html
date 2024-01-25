@@ -41,8 +41,8 @@
 
                 const decodedPubKey = (new Uint8Array(pubKey)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
                 clipboardHolder = decodedPubKey;
+                parseRawPublicKey(pubKey)
                 console.log("Raw Public Key:", pubKey);
-                console.log("Decoded Public Key:", decodedPubKey);
                 document.getElementById("signaturefield").innerHTML = "Public Key: " + truncateString(decodedPubKey);
                 document.getElementById('clipboard-button').style.display = 'block';
 
@@ -97,6 +97,49 @@
         function formatArrayBuf(buffer, encoding = 'utf-8') {
             const decoder = new TextDecoder(encoding);
             return decoder.decode(buffer);
+        }
+        
+        function parseRawPublicKey(publicKeyArray) {
+            pubKeyView = new Uint8Array(publicKeyArray);
+
+            const headerByte = pubKeyView[0];
+            console.log('Public Key Header Byte: ', headerByte);
+
+            // Second value tells you the length of the rest of the data array
+            const keyLength = pubKeyView[1];
+            console.log('Length of key frame in bytes: ', keyLength);
+
+            // Third value tells you the type of the next value which MUST be an integer (0x02) if this is a signature array
+            const metadataIndicatorByte = pubKeyView[2];
+            console.log('Data Type Byte: ', metadataIndicatorByte);
+            // Third byte MUST be equal to 2 if this is a legitimate signature array
+            console.assert(metadataIndicatorByte === 48, "This is not a public key byte array");
+
+            // Forth Value is the length of the public key metadata
+            const metadataLength = pubKeyView[3];
+            console.log("Metadata Length: ", metadataLength);
+
+            // Slice out the metadata and print it
+            const metadataUint8Array = pubKeyView.slice(4, 4 + metadataLength - 1);
+            const metadataString = metadataUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
+            console.log("Metadata: ", metadataString);
+
+            const publicKeyIndicatorByte = pubKeyView[4 + metadataLength];
+            console.log('Public Key Type Byte: ', publicKeyIndicatorByte);
+            // This byte MUST be equal to 2 if this is a legitimate signature array
+            console.assert(publicKeyIndicatorByte === 3, "This is not a public key byte array");
+
+            // Now get the length of the s value of the signature (r,s)
+            const pubKeyLength = pubKeyView[4 + metadataLength + 1];
+            console.log("Public Key Length: ", pubKeyLength);
+
+            // Slice out the s value and print it
+            const startingByte = 4 + metadataLength + 2;
+            const endingByte = startingByte + pubKeyLength - 1;
+            const publicKeyUint8Array = pubKeyView.slice(startingByte, endingByte);
+            const publicKeyString = publicKeyUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
+            console.log("Public Key: ", publicKeyString);
+
         }
 
         function parseRawSignature(signatureArray) {
