@@ -68,6 +68,9 @@
                 const { authenticatorData, clientDataJSON, signature, userHandle } = pubKeyCredential.response;
                 const { type, challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
 
+                console.log("Raw Authenticator Data: ", authenticatorData);
+                console.log("Raw Client Data JSON: ", clientDataJSON);
+
                 console.log("Authenticator Data: ", formatArrayBuf(authenticatorData));
                 const signCountBytes = authenticatorData.slice(33, 37); // sign count lives in the 4 bytes starting at byte 34 as per W3C 
                 const dataView = new DataView(signCountBytes);
@@ -116,6 +119,7 @@
             console.log("Metadata Length: ", metadataLength);
 
             // Slice out the metadata and print it
+            // this metadata is a SEQUENCE OF containing the description of the key type (i.e. ecPublickey for P-256)
             const metadataUint8Array = pubKeyView.slice(4, 4 + metadataLength - 1);
             const metadataString = metadataUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
             console.log("Metadata: ", metadataString);
@@ -154,6 +158,7 @@
             console.log('Length of Signature in Bytes: ', signatureLength);
 
             // Third value tells you the type of the next value which MUST be an integer (0x02) if this is a signature array
+            // https://en.wikipedia.org/wiki/X.690#identifier_octets
             const rTypeIndicatorByte = signatureView[2];
             console.log('Data Type Byte: ', rTypeIndicatorByte);
             // Third byte MUST be equal to 2 if this is a legitimate signature array
