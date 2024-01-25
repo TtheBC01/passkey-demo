@@ -90,6 +90,7 @@
 
                 const decodedSignature = formatArrayBuf(signature);
                 clipboardHolder = decodedSignature;
+                parseRawSignature(signature);
                 console.log("Raw Signature:", signature);
                 console.log("Decoded Signature: ", decodedSignature);
                 document.getElementById("signaturefield").innerHTML = "Signature: " + truncateString(decodedSignature);
@@ -100,6 +101,20 @@
         function formatArrayBuf(buffer, encoding = 'utf-8') {
             const decoder = new TextDecoder(encoding);
             return decoder.decode(buffer);
+        }
+
+        function parseRawSignature(signatureArray) {
+            signatureView = new Uint8Array(signatureArray);
+
+            const headerByte = signatureView[0];
+            console.log('Signature Header Byte: ', headerByte.toString());
+
+            const firstCoordLength = signatureView[1];
+            console.log('First Coordinate Length: ', firstCoordLength.toString());
+
+            const typeIndicatorByte = signatureView[2];
+            console.log('Data Type Byte: ', typeIndicatorByte.toString());
+
         }
 
         function truncateString(str) {
