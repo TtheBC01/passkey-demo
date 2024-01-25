@@ -109,16 +109,19 @@
             const headerByte = signatureView[0];
             console.log('Signature Header Byte: ', headerByte);
 
-            const firstCoordLength = signatureView[1];
-            console.log('First Coordinate Length: ', firstCoordLength);
+            const signatureLength = signatureView[1];
+            console.log('Length of Signature in Bytes: ', firstCoordLength);
 
             const typeIndicatorByte = signatureView[2];
             console.log('Data Type Byte: ', typeIndicatorByte);
             // Third byte MUST be equal to 2 if this is a legitamate signature array
             console.assert(typeIndicatorByte === 2, "This is not a signature byte array");
 
-            const xCoordinateUint8Array = signatureView.slice(3,3+firstCoordLength);
-            console.log("X Coordinate: ", xCoordinateUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
+            const rLength = signatureView[3];
+            console.log("R Value Length: ", rLength);
+
+            const rValueUint8Array = signatureView.slice(4,4+rLength);
+            console.log("X Coordinate: ", rValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
 
 
         }
