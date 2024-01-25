@@ -135,7 +135,7 @@
 
             // Slice out the s value and print it
             const startingByte = 4 + metadataLength + 2;
-            const endingByte = startingByte + pubKeyLength - 1;
+            const endingByte = startingByte + pubKeyLength;
             const publicKeyUint8Array = pubKeyView.slice(startingByte, endingByte);
             const publicKeyString = publicKeyUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
             console.log("Public Key: ", publicKeyString);
@@ -179,7 +179,7 @@
 
             // Slice out the s value and print it
             const startingByte = 4 + rLength + 2;
-            const endingByte = startingByte + sLength - 1;
+            const endingByte = startingByte + sLength;
             const sValueUint8Array = signatureView.slice(startingByte, endingByte);
             const sString = sValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
             console.log("S Value: ", sString);
