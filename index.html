@@ -114,6 +114,12 @@
 
             const typeIndicatorByte = signatureView[2];
             console.log('Data Type Byte: ', typeIndicatorByte);
+            // Third byte MUST be equal to 2 if this is a legitamate signature array
+            console.assert(typeIndicatorByte === 2, "This is not a signature byte array");
+
+            const xCoordinateUint8Array = signatureView.slice(3,3+firstCoordLength);
+            console.log("X Coordinate: ", xCoordinateUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
+
 
         }
 
