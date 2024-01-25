@@ -141,7 +141,7 @@
             const sString = sValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
             console.log("S Value: ", sString);
 
-            document.getElementById("signaturefield").innerHTML = "R Length: " + rLength + ", R: " + rString.slice(0,10) + "..." + ", S Length: " + sLength + ", S: " + sString.slice(0,10) + "...";
+            document.getElementById("signaturefield").innerHTML = "Signature Data - R Length: " + rLength + ", R: " + rString.slice(0,10) + "..." + ", S Length: " + sLength + ", S: " + sString.slice(0,10) + "...";
             document.getElementById('clipboard-button').style.display = 'block';
             clipboardHolder = rString + "," + sString;
         }
