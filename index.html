@@ -70,7 +70,10 @@
                 console.log("Raw Client Data JSON: ", clientDataJSON);
                 console.log("Decoded Client Data JSON: ", formatArrayBuf(clientDataJSON))
 
-                console.log("rpIdHash: ", (new Uint8Array(authenticatorData).slice(0,31)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
+                const authMessageBuffer = computeMessageArray(authenticatorData, clientDataJSON);
+                console.log("Authenticator Message Array: ", authMessageBuffer);
+
+                console.log("rpIdHash: ", (new Uint8Array(authenticatorData).slice(0, 31)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
                 const signCountBytes = authenticatorData.slice(33, 37); // sign count lives in the 4 bytes starting at byte 34 as per W3C 
                 const dataView = new DataView(signCountBytes);
                 const signCount = dataView.getInt32(0, false);
@@ -98,6 +101,51 @@
             return decoder.decode(buffer);
         }
 
+        // see step 20 in the W3C specification: https://www.w3.org/TR/webauthn-2/#sctn-verifying-assertion
+        function computeMessageArray(authenticatorData, clientDataJSON) {
+
+            // first compute the sha256 hash of clientDataJSON
+            const cDataHash = computeSHA256(clientDataJSON);
+            console.log("Client Data JSON Hash: ", cDataHash);
+
+            // then perform a binary concatenation of the authenticatorData and cDataHash
+            const authMessageBuffer = concatenateArrayBuffers(authenticatorData,cDataHash);
+
+            return authMessageBuffer;
+        }
+
+        function concatenateArrayBuffers(buffer1, buffer2) {
+            // Create a new ArrayBuffer with the combined length
+            const combinedLength = buffer1.byteLength + buffer2.byteLength;
+            const combinedBuffer = new ArrayBuffer(combinedLength);
+
+            // Create views to copy the contents of the original buffers
+            const combinedView = new Uint8Array(combinedBuffer);
+            const view1 = new Uint8Array(buffer1);
+            const view2 = new Uint8Array(buffer2);
+
+            // Copy the contents of the first buffer
+            combinedView.set(view1, 0);
+
+            // Copy the contents of the second buffer
+            combinedView.set(view2, buffer1.byteLength);
+
+            return combinedBuffer;
+        }
+
+        // use the browser-native crypto.subtle.digest to perform a SHA-256 hash
+        // The function is intended to take in an ArrayBuffer
+        function computeSHA256(myArrayBuffer) {
+
+            const myUint8Array = new Uint8Array(myArrayBuffer);
+
+            const hashBuffer = await crypto.subtle.digest("SHA-256", myUint8Array);
+
+            const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+
+            return hashArray; // return the hash as a byte array
+        }
+
         function parseRawPublicKey(publicKeyArray) {
             pubKeyView = new Uint8Array(publicKeyArray);
 
@@ -111,7 +159,7 @@
             // Third value tells you the type of the next value which MUST be an integer (0x02) if this is a signature array
             const metadataIndicatorByte = pubKeyView[2];
             console.log('Data Type Byte: ', metadataIndicatorByte);
-            // Third byte MUST be equal to 2 if this is a legitimate signature array
+            // Third byte MUST be equal to 48 if this is a legitimate public key array
             console.assert(metadataIndicatorByte === 48, "This is not a public key byte array");
 
             // Forth Value is the length of the public key metadata
@@ -120,6 +168,8 @@
 
             // Slice out the metadata and print it
             // this metadata is a SEQUENCE OF containing the description of the key type (i.e. ecPublickey for P-256)
+            // Really we should parse this and make sure the public key was generated for the curve we are expecting
+            // i.e. P256 (the object identifier for this curve is: 1.2.840.10045.3.1.7 https://oid-rep.orange-labs.fr/get/1.2.840.10045.3.1.7)
             const metadataUint8Array = pubKeyView.slice(4, 4 + metadataLength - 1);
             const metadataString = metadataUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
             console.log("Metadata: ", metadataString);
