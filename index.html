@@ -70,8 +70,7 @@
                 console.log("Raw Client Data JSON: ", clientDataJSON);
                 console.log("Decoded Client Data JSON: ", formatArrayBuf(clientDataJSON))
 
-                const authMessageBuffer = computeMessageArray(authenticatorData, clientDataJSON);
-                console.log("Authenticator Message Array: ", authMessageBuffer);
+                computeMessageArray(authenticatorData, clientDataJSON);
 
                 console.log("rpIdHash: ", (new Uint8Array(authenticatorData).slice(0, 31)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
                 const signCountBytes = authenticatorData.slice(33, 37); // sign count lives in the 4 bytes starting at byte 34 as per W3C 
@@ -105,17 +104,14 @@
         function computeMessageArray(authenticatorData, clientDataJSON) {
 
             // first compute the sha256 hash of clientDataJSON
-            const msg = computeSHA256(clientDataJSON).then((cDataHash) => {
+            computeSHA256(clientDataJSON).then((cDataHash) => {
                 console.log("Client Data JSON Hash: ", cDataHash);
                 console.log("asdf: ", authenticatorData);
 
                 // then perform a binary concatenation of the authenticatorData and cDataHash
                 const authMessageBuffer = concatenateArrayBuffers(authenticatorData,cDataHash);
-
-                return authMessageBuffer;
+                console.log("Auth Message Buffer: ", authMessageBuffer);
             });
-
-            return msg;
         }
 
         function concatenateArrayBuffers(buffer1, buffer2) {
