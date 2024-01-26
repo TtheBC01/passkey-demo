@@ -105,13 +105,14 @@
         function computeMessageArray(authenticatorData, clientDataJSON) {
 
             // first compute the sha256 hash of clientDataJSON
-            const cDataHash = computeSHA256(clientDataJSON);
-            console.log("Client Data JSON Hash: ", cDataHash);
+            computeSHA256(clientDataJSON).then((cDataHash) => {
+                console.log("Client Data JSON Hash: ", cDataHash);
 
-            // then perform a binary concatenation of the authenticatorData and cDataHash
-            const authMessageBuffer = concatenateArrayBuffers(authenticatorData,cDataHash);
+                // then perform a binary concatenation of the authenticatorData and cDataHash
+                const authMessageBuffer = concatenateArrayBuffers(authenticatorData,cDataHash);
 
-            return authMessageBuffer;
+                return authMessageBuffer;
+            });
         }
 
         function concatenateArrayBuffers(buffer1, buffer2) {
@@ -135,7 +136,7 @@
 
         // use the browser-native crypto.subtle.digest to perform a SHA-256 hash
         // The function is intended to take in an ArrayBuffer
-        function computeSHA256(myArrayBuffer) {
+        async function computeSHA256(myArrayBuffer) {
 
             const myUint8Array = new Uint8Array(myArrayBuffer);
 
