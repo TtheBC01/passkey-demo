@@ -35,13 +35,13 @@
                 } = pubKeyCredential;
                 const pubKey = pubKeyCredential.response.getPublicKey();
                 const { clientDataJSON, attestationObject } = pubKeyCredential.response;
-                const { type, challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
+                const { challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
 
                 parseRawPublicKey(pubKey)
 
-                console.log("Public Key Credential Response: ", pubKeyCredential);
                 console.log("Key ID:", id);
                 console.log("Raw Public Key:", pubKey);
+                console.log("Attestation Object: ", formatArrayBuf(attestationObject));
                 console.log("Client Data JSON: ", formatArrayBuf(clientDataJSON));
 
                 document.getElementById("keyid").innerHTML = "Key ID: " + id;
