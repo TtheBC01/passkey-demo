@@ -36,18 +36,15 @@
                 const pubKey = pubKeyCredential.response.getPublicKey();
                 const { clientDataJSON, attestationObject } = pubKeyCredential.response;
                 const { type, challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
-                console.log("Key ID:", id);
-                document.getElementById("keyid").innerHTML = "Key ID: " + id;
 
                 parseRawPublicKey(pubKey)
+
+                console.log("Key ID:", id);
                 console.log("Raw Public Key:", pubKey);
+                console.log("Client Data JSON: ", formatArrayBuf(clientDataJSON));
 
-                console.log("Type:", type);
-                console.log("Challenge:", truncateString(challenge));
-
+                document.getElementById("keyid").innerHTML = "Key ID: " + id;
                 document.getElementById("keychallenge").innerHTML = "Challenge: " + challenge;
-
-                console.log("Origin:", origin);
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin;
             })
         }
