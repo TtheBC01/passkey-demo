@@ -105,7 +105,7 @@
         function computeMessageArray(authenticatorData, clientDataJSON) {
 
             // first compute the sha256 hash of clientDataJSON
-            computeSHA256(clientDataJSON).then((cDataHash) => {
+            const msg = computeSHA256(clientDataJSON).then((cDataHash) => {
                 console.log("Client Data JSON Hash: ", cDataHash);
                 console.log("asdf: ", authenticatorData);
 
@@ -114,6 +114,8 @@
 
                 return authMessageBuffer;
             });
+
+            return msg;
         }
 
         function concatenateArrayBuffers(buffer1, buffer2) {
