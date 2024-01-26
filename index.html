@@ -44,7 +44,7 @@
                 console.log("Client Data JSON: ", formatArrayBuf(clientDataJSON));
 
                 document.getElementById("keyid").innerHTML = "Key ID: " + id;
-                document.getElementById("keychallenge").innerHTML = "Challenge: " + challenge;
+                document.getElementById("keychallenge").innerHTML = "Challenge: " + truncateString(challenge);
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin;
             })
         }
