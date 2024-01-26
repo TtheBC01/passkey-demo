@@ -107,6 +107,7 @@
             // first compute the sha256 hash of clientDataJSON
             computeSHA256(clientDataJSON).then((cDataHash) => {
                 console.log("Client Data JSON Hash: ", cDataHash);
+                console.log("asdf: ", authenticatorData);
 
                 // then perform a binary concatenation of the authenticatorData and cDataHash
                 const authMessageBuffer = concatenateArrayBuffers(authenticatorData,cDataHash);
@@ -142,9 +143,7 @@
 
             const hashBuffer = await crypto.subtle.digest("SHA-256", myUint8Array);
 
-            const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-
-            return hashArray; // return the hash as a byte array
+            return hashBuffer; // return the hash as a byte array
         }
 
         function parseRawPublicKey(publicKeyArray) {
