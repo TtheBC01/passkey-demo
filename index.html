@@ -40,6 +40,19 @@
 
                 parseRawPublicKey(pubKey)
 
+                crypto.subtle.importKey(
+                    "raw",
+                    pubKey,
+                    {
+                        name: 'ECDSA',
+                        namedCurve: 'P-256',
+                    },
+                    true,
+                    ["verify"]
+                ).then((importedKey) => {
+                    console.log("Imported Public Key: ", importedKey);
+                });
+
                 console.log("Key ID:", id);
                 console.log("Raw Public Key:", pubKey);
                 console.log("Attestation Object: ", attestationObject);
