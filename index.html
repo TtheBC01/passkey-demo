@@ -28,6 +28,7 @@
                 pubKeyCredParams: [{ type: "public-key", alg: -7 }]
             }
 
+            publicKey.user.id
             console.log("Creating Passkey")
             navigator.credentials.create({ publicKey }).then((pubKeyCredential) => {
                 const {
@@ -73,6 +74,10 @@
 
                 computeMessageArray(authenticatorData, clientDataJSON);
 
+                computeSHA256(window.location.host).then((myHash) => {
+                    console.log("Computed rpIdHash: ", (new Uint8Array(myHash)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
+                });
+
                 console.log("rpIdHash: ", (new Uint8Array(authenticatorData).slice(0, 31)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
                 const signCountBytes = authenticatorData.slice(33, 37); // sign count lives in the 4 bytes starting at byte 34 as per W3C 
                 const dataView = new DataView(signCountBytes);
@@ -110,7 +115,7 @@
                 console.log("asdf: ", authenticatorData);
 
                 // then perform a binary concatenation of the authenticatorData and cDataHash
-                const authMessageBuffer = concatenateArrayBuffers(authenticatorData,cDataHash);
+                const authMessageBuffer = concatenateArrayBuffers(authenticatorData, cDataHash);
                 console.log("Auth Message Buffer: ", authMessageBuffer);
             });
         }
