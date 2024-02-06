@@ -74,8 +74,9 @@
 
                 computeMessageArray(authenticatorData, clientDataJSON);
 
-                computeSHA256(window.location.host).then((myHash) => {
-                    console.log("Computed rpIdHash: ", (new Uint8Array(myHash)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
+                crypto.subtle.digest('SHA-256', new TextEncoder().encode(window.location.host)).then((hashBuffer) => {
+                    console.log("Computed Hash Buffer: ", hashBuffer);
+                    console.log("Computed rpIdHash: ", (new Uint8Array(hashBuffer)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
                 });
 
                 console.log("rpIdHash: ", (new Uint8Array(authenticatorData).slice(0, 31)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
