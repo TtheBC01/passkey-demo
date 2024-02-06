@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="styles.css">
     <script type="text/javascript">
         var clipboardHolder;
+        let pubKey;
 
         function createPasskey() {
             const publicKey = {
@@ -34,7 +35,7 @@
                 const {
                     id // the key id a.k.a. kid
                 } = pubKeyCredential;
-                const pubKey = pubKeyCredential.response.getPublicKey();
+                pubKey = pubKeyCredential.response.getPublicKey();
                 const { clientDataJSON, attestationObject } = pubKeyCredential.response;
                 const { challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
 
@@ -47,7 +48,7 @@
                         name: 'ECDSA',
                         namedCurve: 'P-256',
                     },
-                    true,
+                    false,
                     ["verify"]
                 ).then((importedKey) => {
                     console.log("Imported Public Key: ", importedKey);
