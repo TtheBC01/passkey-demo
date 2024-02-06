@@ -39,10 +39,12 @@
                 const { clientDataJSON, attestationObject } = pubKeyCredential.response;
                 const { challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
 
+                encodeBas
+
                 parseRawPublicKey(pubKey)
 
                 crypto.subtle.importKey(
-                    "raw",
+                    "spki",
                     pubKey,
                     {
                         name: 'ECDSA',
