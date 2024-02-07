@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="styles.css">
     <script type="text/javascript">
         var clipboardHolder;
-        let pubKey;
 
         function createPasskey() {
             const publicKey = {
@@ -35,7 +34,7 @@
                 const {
                     id // the key id a.k.a. kid
                 } = pubKeyCredential;
-                pubKey = pubKeyCredential.response.getPublicKey();
+                const pubKey = pubKeyCredential.response.getPublicKey();
                 const { clientDataJSON, attestationObject } = pubKeyCredential.response;
                 const { challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
 
@@ -87,6 +86,9 @@
                 console.log("Raw Authenticator Data: ", authenticatorData);
                 console.log("Raw Client Data JSON: ", clientDataJSON);
                 console.log("Decoded Client Data JSON: ", formatArrayBuf(clientDataJSON))
+
+                const pubKey = getPublicKey(id);
+                console.log("Public Key: ", pubKey);
 
                 computeMessageArray(authenticatorData, clientDataJSON);
 
