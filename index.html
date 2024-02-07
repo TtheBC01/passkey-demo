@@ -74,22 +74,7 @@
                 console.log("Raw Client Data JSON: ", clientDataJSON);
                 console.log("Decoded Client Data JSON: ", formatArrayBuf(clientDataJSON))
 
-                const pubKey = retrievePublicKey(id);
-                console.log("Public Key: ", pubKey);
-                crypto.subtle.importKey(
-                    "spki",
-                    pubKey,
-                    {
-                        name: 'ECDSA',
-                        namedCurve: 'P-256',
-                    },
-                    false,
-                    ["verify"]
-                ).then((importedKey) => {
-                    console.log("Imported Public Key: ", importedKey);
-                });
-
-                computeMessageArray(authenticatorData, clientDataJSON);
+                verifySignature(id, authenticatorData, clientDataJSON);
 
                 crypto.subtle.digest('SHA-256', new TextEncoder().encode(window.location.host)).then((hashBuffer) => {
                     console.log("Computed Hash Buffer: ", hashBuffer);
@@ -125,7 +110,10 @@
         }
 
         // see step 20 in the W3C specification: https://www.w3.org/TR/webauthn-2/#sctn-verifying-assertion
-        function computeMessageArray(authenticatorData, clientDataJSON) {
+        function verifySignature(keyId, authenticatorData, clientDataJSON) {
+
+            const pubKey = retrievePublicKey(keyId);
+            console.log("Public Key: ", pubKey);
 
             // first compute the sha256 hash of clientDataJSON
             computeSHA256(clientDataJSON).then((cDataHash) => {
@@ -134,6 +122,30 @@
                 // then perform a binary concatenation of the authenticatorData and cDataHash
                 const authMessageBuffer = concatenateArrayBuffers(authenticatorData, cDataHash);
                 console.log("Auth Message Buffer: ", authMessageBuffer);
+
+                // next import the public key into subtle crypto api
+                return crypto.subtle.importKey(
+                    "spki",
+                    pubKey,
+                    {
+                        name: 'ECDSA',
+                        namedCurve: 'P-256',
+                    },
+                    false,
+                    ["verify"]
+                )
+            }).then((importedKey) => {
+                console.log("Imported Public Key: ", importedKey);
+                return crypto.subtle.verify(
+                    {
+                        name: "ECDSA",
+                        hash: "SHA-256"
+                    },
+                    importedKey,
+                    authMessageBuffer,
+                )
+            }).then((signatureVerified) => {
+                console.log("Signature Verified: ", signatureVerified);
             });
         }
 
