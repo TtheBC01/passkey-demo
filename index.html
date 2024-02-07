@@ -42,19 +42,6 @@
 
                 parseRawPublicKey(pubKey)
 
-                crypto.subtle.importKey(
-                    "spki",
-                    pubKey,
-                    {
-                        name: 'ECDSA',
-                        namedCurve: 'P-256',
-                    },
-                    false,
-                    ["verify"]
-                ).then((importedKey) => {
-                    console.log("Imported Public Key: ", importedKey);
-                });
-
                 console.log("Key ID:", id);
                 console.log("Raw Public Key:", pubKey);
                 console.log("Attestation Object: ", attestationObject);
@@ -89,6 +76,18 @@
 
                 const pubKey = retrievePublicKey(id);
                 console.log("Public Key: ", pubKey);
+                crypto.subtle.importKey(
+                    "spki",
+                    pubKey,
+                    {
+                        name: 'ECDSA',
+                        namedCurve: 'P-256',
+                    },
+                    false,
+                    ["verify"]
+                ).then((importedKey) => {
+                    console.log("Imported Public Key: ", importedKey);
+                });
 
                 computeMessageArray(authenticatorData, clientDataJSON);
 
