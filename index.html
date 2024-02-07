@@ -189,7 +189,7 @@
             // this metadata is a SEQUENCE OF containing the description of the key type (i.e. ecPublickey for P-256)
             // Really we should parse this and make sure the public key was generated for the curve we are expecting
             // i.e. P256 (the object identifier for this curve is: 1.2.840.10045.3.1.7 https://oid-rep.orange-labs.fr/get/1.2.840.10045.3.1.7)
-            const metadataUint8Array = pubKeyView.slice(4, 4 + metadataLength - 1);
+            const metadataUint8Array = pubKeyView.slice(4, 4 + metadataLength);
             const metadataString = metadataUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
             console.log("Metadata: ", metadataString);
             console.log("Metadata string:", metadataUint8Array.toString());
