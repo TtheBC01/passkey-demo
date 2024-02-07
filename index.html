@@ -74,8 +74,6 @@
                 console.log("Raw Client Data JSON: ", clientDataJSON);
                 console.log("Decoded Client Data JSON: ", formatArrayBuf(clientDataJSON))
 
-                verifySignature(id, authenticatorData, clientDataJSON);
-
                 crypto.subtle.digest('SHA-256', new TextEncoder().encode(window.location.host)).then((hashBuffer) => {
                     console.log("Computed Hash Buffer: ", hashBuffer);
                     console.log("Computed rpIdHash: ", (new Uint8Array(hashBuffer)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
@@ -101,6 +99,7 @@
                 const decodedSignature = formatArrayBuf(signature);
                 const parsedSignatureBuffer = parseRawSignature(signature);
                 console.log("Raw Signature:", signature);
+                verifySignature(id, authenticatorData, clientDataJSON, parsedSignatureBuffer);
             })
         }
 
@@ -110,7 +109,7 @@
         }
 
         // see step 20 in the W3C specification: https://www.w3.org/TR/webauthn-2/#sctn-verifying-assertion
-        function verifySignature(keyId, authenticatorData, clientDataJSON) {
+        function verifySignature(keyId, authenticatorData, clientDataJSON, parsedSignatureBuffer) {
 
             const pubKey = retrievePublicKey(keyId);
             console.log("Public Key: ", pubKey);
@@ -142,7 +141,8 @@
                         hash: "SHA-256"
                     },
                     importedKey,
-                    authMessageBuffer,
+                    parsedSignatureBuffer,
+                    authMessageBuffer
                 )
             }).then((signatureVerified) => {
                 console.log("Signature Verified: ", signatureVerified);
