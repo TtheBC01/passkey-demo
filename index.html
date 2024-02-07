@@ -238,7 +238,7 @@
             console.log("R Value Length: ", rLength);
 
             // Slice out the r value and print it
-            const rValueUint8Array = signatureView.slice(4, 4 + rLength);
+            const rValueUint8Array = formatInteger(signatureView.slice(4, 4 + rLength));
             const rString = rValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
             console.log("R Value: ", rString);
 
@@ -254,13 +254,30 @@
             // Slice out the s value and print it
             const startingByte = 4 + rLength + 2;
             const endingByte = startingByte + sLength;
-            const sValueUint8Array = signatureView.slice(startingByte, endingByte);
+            const sValueUint8Array = formatInteger(signatureView.slice(startingByte, endingByte));
             const sString = sValueUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
             console.log("S Value: ", sString);
 
             document.getElementById("signaturefield").innerHTML = "Signature Data - R Length: " + rLength + ", R: " + rString.slice(0, 10) + "..." + ", S Length: " + sLength + ", S: " + sString.slice(0, 10) + "...";
             document.getElementById('clipboard-button').style.display = 'block';
             clipboardHolder = rString + "," + sString;
+
+            return new Uint8Array([]).buffer;
+        }
+
+        // curve elements MUST be 32 bytes
+        // this function converts variable length ints to 32 bytes ints
+        function formatInteger(integerBytes) {
+            if (integerBytes.byteLength === 32) return integerBytes;
+            if (integerBytes.byteLength < 32) {
+                return concatenateUint8Array(
+                    // pad the most significant digits with 0's if too short
+                    new Uint8Array(expectedLength - integerBytes.byteLength).fill(0),
+                    integerBytes
+                );
+            }
+            // remove superfluous 0's if too long
+            return integerBytes.slice(-32);
         }
 
         function truncateString(str) {
