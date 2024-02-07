@@ -87,7 +87,7 @@
                 console.log("Raw Client Data JSON: ", clientDataJSON);
                 console.log("Decoded Client Data JSON: ", formatArrayBuf(clientDataJSON))
 
-                const pubKey = getPublicKey(id);
+                const pubKey = retrievePublicKey(id);
                 console.log("Public Key: ", pubKey);
 
                 computeMessageArray(authenticatorData, clientDataJSON);
@@ -177,7 +177,7 @@
             localStorage.setItem(keyId, base64String);
         }
 
-        function getArrayBuffer(keyId) {
+        function retrievePublicKey(keyId) {
             // Retrieve the Base64 string from localStorage
             const base64String = localStorage.getItem(keyId);
             if (!base64String) {
