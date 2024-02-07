@@ -39,6 +39,8 @@
                 const { clientDataJSON, attestationObject } = pubKeyCredential.response;
                 const { challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
 
+                storePublicKey(id, pubKey);
+
                 parseRawPublicKey(pubKey)
 
                 crypto.subtle.importKey(
@@ -111,7 +113,7 @@
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin + "   " + "Sign Count: " + signCount;
 
                 const decodedSignature = formatArrayBuf(signature);
-                parseRawSignature(signature);
+                const parsedSignatureBuffer = parseRawSignature(signature);
                 console.log("Raw Signature:", signature);
             })
         }
@@ -127,7 +129,6 @@
             // first compute the sha256 hash of clientDataJSON
             computeSHA256(clientDataJSON).then((cDataHash) => {
                 console.log("Client Data JSON Hash: ", cDataHash);
-                console.log("asdf: ", authenticatorData);
 
                 // then perform a binary concatenation of the authenticatorData and cDataHash
                 const authMessageBuffer = concatenateArrayBuffers(authenticatorData, cDataHash);
@@ -163,6 +164,28 @@
             const hashBuffer = await crypto.subtle.digest("SHA-256", myUint8Array);
 
             return hashBuffer; // return the hash as a byte array
+        }
+
+        function storePublicKey(keyId, arrayBuffer) {
+            // Convert ArrayBuffer to Uint8Array
+            const uint8Array = new Uint8Array(arrayBuffer);
+            // Convert Uint8Array to Base64 string
+            const base64String = btoa(String.fromCharCode.apply(null, uint8Array));
+            // Store the Base64 string in localStorage
+            localStorage.setItem(keyId, base64String);
+        }
+
+        function getArrayBuffer(keyId) {
+            // Retrieve the Base64 string from localStorage
+            const base64String = localStorage.getItem(keyId);
+            if (!base64String) {
+                return null;
+            }
+            // Convert Base64 string to Uint8Array
+            const uint8Array = new Uint8Array(atob(base64String).split('').map(char => char.charCodeAt(0)));
+            // Convert Uint8Array back to ArrayBuffer
+            const arrayBuffer = uint8Array.buffer;
+            return arrayBuffer;
         }
 
         function parseRawPublicKey(publicKeyArray) {
@@ -262,7 +285,7 @@
             document.getElementById('clipboard-button').style.display = 'block';
             clipboardHolder = rString + "," + sString;
 
-            return new Uint8Array([]).buffer;
+            return new Uint8Array([...rValueUint8Array, ...sValueUint8Array]).buffer;
         }
 
         // curve elements MUST be 32 bytes
