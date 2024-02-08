@@ -14,21 +14,15 @@
                     id: window.location.host,
                     name: document.title,
                 },
-                authenticatorSelection: {
-                    userVerification: 'preferred', // Do you want to use biometrics or a pin?
-                    residentKey: 'required', // Create a resident key e.g. passkey
-                },
-                attestation: 'indirect', // indirect, direct, or none
                 timeout: 60_000,
                 user: {
                     id: new TextEncoder().encode(crypto.randomUUID()),
                     name: "Demo",
                     displayName: "Demo"
                 },
-                pubKeyCredParams: [{ type: "public-key", alg: -7 }]
+                pubKeyCredParams: [{ type: "public-key", alg: -7 }] // -7 denotes ECDSA
             }
 
-            publicKey.user.id
             console.log("Creating Passkey")
             navigator.credentials.create({ publicKey }).then((pubKeyCredential) => {
                 const {
@@ -38,8 +32,11 @@
                 const { clientDataJSON, attestationObject } = pubKeyCredential.response;
                 const { challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
 
+                // save the public key so we can use it for signature verification later
                 storePublicKey(id, pubKey);
 
+                // parse the public key bytes array to separate key bytes from metadata bytes
+                // (not necessary for use with crypto.subtle.verify)
                 parseRawPublicKey(pubKey)
 
                 console.log("Key ID:", id);
@@ -96,7 +93,6 @@
                 console.log("Origin: ", origin);
                 document.getElementById("keyorigin").innerHTML = "Origin: " + origin + "   " + "Sign Count: " + signCount;
 
-                const decodedSignature = formatArrayBuf(signature);
                 const parsedSignatureBuffer = parseRawSignature(signature);
                 console.log("Raw Signature:", signature);
                 verifySignature(id, authenticatorData, clientDataJSON, parsedSignatureBuffer);
@@ -128,6 +124,7 @@
                 authMessageBuffer = concatenateArrayBuffers(authenticatorData, cDataHash);
 
                 // next import the public key into subtle crypto api
+                // spki (SubjectPublicKeyInfo) will import the ArrayBuffer straight from the WebAuthn Api
                 return crypto.subtle.importKey(
                     "spki",
                     pubKey,
@@ -151,6 +148,12 @@
                 )
             }).then((signatureVerified) => {
                 console.log("Signature Verified: ", signatureVerified);
+                if (signatureVerified === true) {
+                    document.getElementById("signaturefield").innerHTML += '✅';
+                } else {
+                    document.getElementById("signaturefield").innerHTML += "❌💀❌";
+                }
+                
             });
         }
 
@@ -303,6 +306,7 @@
             document.getElementById('clipboard-button').style.display = 'block';
             clipboardHolder = rString + "," + sString;
 
+            // return the signature formatted for use in crypto.subtle.verify
             return new Uint8Array([...rValueUint8Array, ...sValueUint8Array]).buffer;
         }
 
