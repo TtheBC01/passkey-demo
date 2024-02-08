@@ -111,16 +111,21 @@
         // see step 20 in the W3C specification: https://www.w3.org/TR/webauthn-2/#sctn-verifying-assertion
         function verifySignature(keyId, authenticatorData, clientDataJSON, parsedSignatureBuffer) {
 
+            // fetch correct public key from local storage
             const pubKey = retrievePublicKey(keyId);
             console.log("Public Key: ", pubKey);
+
+            let authMessageBuffer; 
 
             // first compute the sha256 hash of clientDataJSON
             computeSHA256(clientDataJSON).then((cDataHash) => {
                 console.log("Client Data JSON Hash: ", cDataHash);
 
-                // then perform a binary concatenation of the authenticatorData and cDataHash
-                const authMessageBuffer = concatenateArrayBuffers(authenticatorData, cDataHash);
                 console.log("Auth Message Buffer: ", authMessageBuffer);
+
+                // then perform a binary concatenation of the authenticatorData and cDataHash
+                // https://www.w3.org/TR/webauthn-2/#sctn-verifying-assertion (step 19 + 20)
+                authMessageBuffer = concatenateArrayBuffers(authenticatorData, cDataHash);
 
                 // next import the public key into subtle crypto api
                 return crypto.subtle.importKey(
