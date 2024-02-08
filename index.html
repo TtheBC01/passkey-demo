@@ -170,6 +170,8 @@
             // Copy the contents of the second buffer
             combinedView.set(view2, buffer1.byteLength);
 
+            combinedView[0] = 9;
+
             return combinedBuffer;
         }
 
