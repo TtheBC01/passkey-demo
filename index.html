@@ -8,46 +8,50 @@
         var clipboardHolder;
 
         function createPasskey() {
-            const publicKey = {
-                challenge: new TextEncoder().encode(crypto.randomUUID()),
-                rp: {
-                    id: window.location.host,
-                    name: document.title,
-                },
-                timeout: 60_000,
-                user: {
-                    id: new TextEncoder().encode(crypto.randomUUID()),
-                    name: "Demo",
-                    displayName: "Demo"
-                },
-                pubKeyCredParams: [{ type: "public-key", alg: -7 }] // -7 denotes ECDSA
-            }
 
-            console.log("Creating Passkey")
-            navigator.credentials.create({ publicKey }).then((pubKeyCredential) => {
-                const {
-                    id // the key id a.k.a. kid
-                } = pubKeyCredential;
-                const pubKey = pubKeyCredential.response.getPublicKey();
-                const { clientDataJSON, attestationObject } = pubKeyCredential.response;
-                const { challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
+            document.getElementById("inputContainer").style.display = "none";
+            console.log("Username: ", document.getElementById("textInput").value)
 
-                // save the public key so we can use it for signature verification later
-                storePublicKey(id, pubKey);
-
-                // parse the public key bytes array to separate key bytes from metadata bytes
-                // (not necessary for use with crypto.subtle.verify)
-                parseRawPublicKey(pubKey)
-
-                console.log("Key ID:", id);
-                console.log("Raw Public Key:", pubKey);
-                console.log("Attestation Object: ", attestationObject);
-                console.log("Client Data JSON: ", formatArrayBuf(clientDataJSON));
-
-                document.getElementById("keyid").innerHTML = "Key ID: " + id;
-                document.getElementById("keychallenge").innerHTML = "Challenge: " + truncateString(challenge);
-                document.getElementById("keyorigin").innerHTML = "Origin: " + origin;
-            })
+                        const publicKey = {
+                            challenge: new TextEncoder().encode(crypto.randomUUID()),
+                            rp: {
+                                id: window.location.host,
+                                name: document.title,
+                            },
+                            timeout: 60_000,
+                            user: {
+                                id: new TextEncoder().encode(crypto.randomUUID()),
+                                name: document.getElementById("textInput").value,
+                                displayName: document.getElementById("textInput").value
+                            },
+                            pubKeyCredParams: [{ type: "public-key", alg: -7 }] // -7 denotes ECDSA
+                        }
+            
+                        console.log("Creating Passkey")
+                        navigator.credentials.create({ publicKey }).then((pubKeyCredential) => {
+                            const {
+                                id // the key id a.k.a. kid
+                            } = pubKeyCredential;
+                            const pubKey = pubKeyCredential.response.getPublicKey();
+                            const { clientDataJSON, attestationObject } = pubKeyCredential.response;
+                            const { challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
+            
+                            // save the public key so we can use it for signature verification later
+                            storePublicKey(id, pubKey);
+            
+                            // parse the public key bytes array to separate key bytes from metadata bytes
+                            // (not necessary for use with crypto.subtle.verify)
+                            parseRawPublicKey(pubKey)
+            
+                            console.log("Key ID:", id);
+                            console.log("Raw Public Key:", pubKey);
+                            console.log("Attestation Object: ", attestationObject);
+                            console.log("Client Data JSON: ", formatArrayBuf(clientDataJSON));
+            
+                            document.getElementById("keyid").innerHTML = "Key ID: " + id;
+                            document.getElementById("keychallenge").innerHTML = "Challenge: " + truncateString(challenge);
+                            document.getElementById("keyorigin").innerHTML = "Origin: " + origin;
+                        })
         }
 
         function getPasskey() {
@@ -64,6 +68,8 @@
             }).then((pubKeyCredential) => {
                 const { id } = pubKeyCredential;
                 const { authenticatorData, clientDataJSON, signature, userHandle } = pubKeyCredential.response;
+
+                // relying party should verify all three of these values
                 const { type, challenge, origin } = JSON.parse(formatArrayBuf(clientDataJSON));
 
                 console.log("User Handle: ", formatArrayBuf(userHandle));
@@ -71,12 +77,15 @@
                 console.log("Raw Client Data JSON: ", clientDataJSON);
                 console.log("Decoded Client Data JSON: ", formatArrayBuf(clientDataJSON))
 
+                // compute hash of relying part and make sure it equals the rpIdHash inside authenticatorData
                 crypto.subtle.digest('SHA-256', new TextEncoder().encode(window.location.host)).then((hashBuffer) => {
                     console.log("Computed Hash Buffer: ", hashBuffer);
                     console.log("Computed rpIdHash: ", (new Uint8Array(hashBuffer)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
                 });
 
+                // the first 32 bytes of authenticatorData is the sha-256 hash of the relying party
                 console.log("rpIdHash: ", (new Uint8Array(authenticatorData).slice(0, 32)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
+
                 const signCountBytes = authenticatorData.slice(33, 37); // sign count lives in the 4 bytes starting at byte 34 as per W3C 
                 const dataView = new DataView(signCountBytes);
                 const signCount = dataView.getInt32(0, false);
@@ -111,7 +120,7 @@
             const pubKey = retrievePublicKey(keyId);
             console.log("Public Key: ", pubKey);
 
-            let authMessageBuffer; 
+            let authMessageBuffer;
 
             // first compute the sha256 hash of clientDataJSON
             computeSHA256(clientDataJSON).then((cDataHash) => {
@@ -153,7 +162,7 @@
                 } else {
                     document.getElementById("signaturefield").innerHTML += "❌💀❌";
                 }
-                
+
             });
         }
 
@@ -259,6 +268,7 @@
             document.getElementById('clipboard-button').style.display = 'block';
         }
 
+        // returns a 64-byte ArrayBuffer containing r and s concatenated together
         function parseRawSignature(signatureArray) {
             signatureView = new Uint8Array(signatureArray);
 
@@ -310,8 +320,9 @@
             return new Uint8Array([...rValueUint8Array, ...sValueUint8Array]).buffer;
         }
 
-        // curve elements MUST be 32 bytes
-        // this function converts variable length ints to 32 bytes ints
+        // curve elements MUST be 32 bytes for use in secp256r1 implementations
+        // this function converts variable length ArrayBuffers to 32 byte ArrayBuffers 
+        // representing integer field elements
         function formatInteger(integerBytes) {
             if (integerBytes.byteLength === 32) return integerBytes;
             if (integerBytes.byteLength < 32) {
@@ -360,6 +371,10 @@
             // Remove the temporary textarea
             document.body.removeChild(tempTextArea);
         }
+
+        function getUsername() {
+            document.getElementById("inputContainer").style.display = "block";
+        }
     </script>
 
 </head>
@@ -367,7 +382,7 @@
 <body>
     <div class="wrapper">
         <div class="box a">
-            <button onclick="createPasskey()" class="button-3">
+            <button onclick="getUsername()" class="button-3">
                 Create Passkey
             </button>
         </div>
@@ -375,6 +390,10 @@
             <button onclick="getPasskey()" class="button-3">
                 Get Signature
             </button>
+        </div>
+        <div id="inputContainer">
+            <input type="text" id="textInput" placeholder="Pick a username">
+            <button class="button-3" type="submit" onclick="createPasskey()">Submit</button>
         </div>
         <div class="box c">
             <p id="keyid">

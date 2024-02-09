@@ -54,6 +54,39 @@ p {
 
 /* CSS */
 
+#inputContainer {
+  display: none; /* Initially hide the input container */
+  position: fixed; /* Position the container relative to the viewport */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Center the container */
+  z-index: 9999; /* Ensure it's on top of other content */
+  background-color: black;
+  padding: 20px;
+  border: 1px solid #2ea44f;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#textInput {
+  width: 200px;
+  padding: 10px;
+  font-size: 16px;
+  background-color: rgb(31, 28, 28);
+  border: 1px solid #2ea44f;
+  color: #2ea44f;
+  border-radius: 6px;
+}
+
+#textInput:focus {
+  background-color: rgb(46, 42, 42);
+  border: 1px solid #2ea44f;
+}
+
+#showInputButton {
+  z-index: 9999; /* Ensure it's on top of other content */
+}
+
 #clipboard-button {
   display: none;
 }
