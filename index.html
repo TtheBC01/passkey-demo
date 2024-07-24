@@ -162,13 +162,13 @@
                 } else {
                     document.getElementById("signaturefield").innerHTML += "❌💀❌";
                 }
-
             }).then(() => {
                 return computeSHA256(authMessageBuffer);
             }).then((authMessageHash) => {
                 const authMessageHashUint8 = new Uint8Array(authMessageHash);
                 const authMessageHashString = authMessageHashUint8.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
-                console.log("Auth Message Hash: ", authMessageHashString);
+                console.log("Auth Message Hash Buffer: ", authMessageHash)
+                console.log("Auth Message Hash Hex: ", authMessageHashString);
             });
         }
 
