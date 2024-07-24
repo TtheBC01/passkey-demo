@@ -269,7 +269,7 @@
             const publicKeyString = publicKeyUint8Array.reduce((t, x) => t + x.toString(16).padStart(2, '0'), '');
             console.log("Public Key: ", publicKeyString);
             console.log("QX: ", publicKeyString.slice(publicKeyString.length - 128, publicKeyString.length - 64));
-            console.log("QY: ", publicKeyString.slice(64));
+            console.log("QY: ", publicKeyString.slice(-64));
 
             clipboardHolder = publicKeyString;
             document.getElementById("signaturefield").innerHTML = "Public Key: " + truncateString(publicKeyString);
