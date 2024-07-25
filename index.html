@@ -74,6 +74,7 @@
 
                 console.log("User Handle: ", formatArrayBuf(userHandle));
                 console.log("Raw Authenticator Data: ", authenticatorData);
+                console.log("Hex Authenticator Data: ", (new Uint8Array(authenticatorData)).reduce((t, x) => t + x.toString(16).padStart(2, '0'), ''));
                 console.log("Raw Client Data JSON: ", clientDataJSON);
                 console.log("Decoded Client Data JSON: ", formatArrayBuf(clientDataJSON))
 
